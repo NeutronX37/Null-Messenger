@@ -1,0 +1,26 @@
+name: offline_mesh
+description: Offline hotspot-based messaging and file sharing (Android).
+publish_to: "none"
+version: 1.0.0+1
+
+environment:
+  sdk: ">=3.3.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  path: ^1.9.0
+  path_provider: ^2.1.4
+  file_picker: ^8.1.2
+  permission_handler: ^11.3.1
+  qr_flutter: ^4.1.0
+  mobile_scanner: ^5.2.3
+  open_filex: ^4.5.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+
+flutter:
+  uses-material-design: true
