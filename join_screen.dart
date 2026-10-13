@@ -132,23 +132,27 @@ class _JoinScreenState extends State<JoinScreen> {
       );
 
   Widget _scannerView() => Stack(children: [
-        MobileScanner(
-          controller: _scanner!,
-          onDetect: _onDetect,
-          errorBuilder: (context, error, child) => Center(
-            child: Padding(
+        MobileScanner(controller: _scanner!, onDetect: _onDetect),
+        ValueListenableBuilder<MobileScannerState>(
+          valueListenable: _scanner!,
+          builder: (context, state, _) {
+            final err = state.error;
+            if (err == null) return const SizedBox.shrink();
+            return Container(
+              color: Theme.of(context).colorScheme.surface,
+              alignment: Alignment.center,
               padding: const EdgeInsets.all(24),
               child: Column(mainAxisSize: MainAxisSize.min, children: [
                 Text(
-                  'Camera error: ${error.errorCode.name}\n${error.errorDetails?.message ?? ''}',
+                  'Camera error: ${err.errorCode.name}\n${err.errorDetails?.message ?? ''}',
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 16),
                 FilledButton(onPressed: () => _scanner?.start(), child: const Text('Retry')),
                 TextButton(onPressed: _manualEntry, child: const Text('Enter network manually')),
               ]),
-            ),
-          ),
+            );
+          },
         ),
         const Align(
           alignment: Alignment.bottomCenter,
