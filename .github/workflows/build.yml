@@ -44,7 +44,7 @@ jobs:
           cat /tmp/hook.txt android/build.gradle.kts > /tmp/merged.kts
           cp /tmp/merged.kts android/build.gradle.kts
           flutter pub get
-          flutter build apk --release
+          flutter build apk --release --no-shrink
       - uses: actions/upload-artifact@v4
         with:
           name: offline-mesh-apk
