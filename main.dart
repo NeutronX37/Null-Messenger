@@ -10,7 +10,7 @@ class MeshApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => MaterialApp(
-        title: 'Offline Mesh',
+        title: 'Null Messenger',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(colorSchemeSeed: Colors.teal, useMaterial3: true),
         darkTheme: ThemeData(colorSchemeSeed: Colors.teal, brightness: Brightness.dark, useMaterial3: true),
@@ -48,7 +48,7 @@ class _HomeScreenState extends State<HomeScreen> {
             children: [
               Icon(Icons.wifi_tethering, size: 72, color: cs.primary),
               const SizedBox(height: 12),
-              Text('Offline Mesh',
+              Text('Null Messenger',
                   textAlign: TextAlign.center, style: Theme.of(context).textTheme.headlineMedium),
               const SizedBox(height: 4),
               Text('Chat and share files with no internet',
