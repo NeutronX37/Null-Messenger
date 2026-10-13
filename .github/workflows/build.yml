@@ -11,12 +11,14 @@ jobs:
         with: { channel: stable }
       - name: Generate Android project and overlay my files
         run: |
+          SRC=$(dirname "$(find "$GITHUB_WORKSPACE" -name pubspec.yaml -not -path '*/.github/*' | head -1)")
+          echo "Source folder: $SRC"
           mkdir -p /tmp/app && cd /tmp/app
           flutter create --org com.example --project-name offline_mesh --platforms=android .
           rm -rf lib
-          cp -r $GITHUB_WORKSPACE/lib $GITHUB_WORKSPACE/pubspec.yaml .
-          cp $GITHUB_WORKSPACE/android/app/src/main/AndroidManifest.xml android/app/src/main/
-          cp $GITHUB_WORKSPACE/android/app/src/main/kotlin/com/example/offline_mesh/MainActivity.kt android/app/src/main/kotlin/com/example/offline_mesh/
+          cp -r "$SRC/lib" "$SRC/pubspec.yaml" .
+          cp "$SRC/android/app/src/main/AndroidManifest.xml" android/app/src/main/
+          cp "$SRC/android/app/src/main/kotlin/com/example/offline_mesh/MainActivity.kt" android/app/src/main/kotlin/com/example/offline_mesh/
           sed -i 's/minSdk = flutter.minSdkVersion/minSdk = 29/; s/minSdkVersion flutter.minSdkVersion/minSdkVersion 29/' android/app/build.gradle* || true
           flutter pub get
           flutter build apk --release
