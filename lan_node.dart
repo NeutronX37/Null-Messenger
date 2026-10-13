@@ -71,7 +71,9 @@ class HostNode {
       if (req.method == 'PUT') {
         final target = uniquePath(saveDir, base);
         final file = File(target);
-        await req.pipe(file.openWrite()); // streams to disk, constant memory
+        final sink = file.openWrite(); // streams to disk, constant memory
+        await sink.addStream(req);
+        await sink.close();
         final event = {
           'type': 'file',
           'id': req.uri.queryParameters['id'] ?? '',
@@ -222,7 +224,7 @@ class Discovery {
   static Future<void> startBeacon(String deviceName, int wsPort) async {
     stopBeacon();
     _tx = await RawDatagramSocket.bind(InternetAddress.anyIPv4, 0);
-    _tx!.broadcast = true;
+    _tx!.broadcastEnabled = true;
     final payload = utf8.encode(jsonEncode({'app': 'offline-mesh', 'name': deviceName, 'port': wsPort}));
     _timer = Timer.periodic(const Duration(seconds: 2), (_) {
       try {
