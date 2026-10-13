@@ -23,7 +23,26 @@ jobs:
           mkdir -p android/app/src/main/kotlin/com/example/offline_mesh
           cp "$S/MainActivity.kt" android/app/src/main/kotlin/com/example/offline_mesh/
           sed -i 's/minSdk = flutter.minSdkVersion/minSdk = 29/; s/minSdkVersion flutter.minSdkVersion/minSdkVersion 29/' android/app/build.gradle*
-          grep -n "minSdk" android/app/build.gradle*
+          cat > /tmp/hook.txt <<'EOF'
+          subprojects {
+              afterEvaluate {
+                  val ext = extensions.findByName("android")
+                  if (ext != null) {
+                      var done = false
+                      for (m in listOf("setCompileSdk", "setCompileSdkVersion")) {
+                          if (done) break
+                          try {
+                              ext.javaClass.getMethod(m, Int::class.javaObjectType).invoke(ext, 36)
+                              done = true
+                          } catch (e: Exception) { }
+                      }
+                      println("compileSdk 36 forced for " + name + ": " + done)
+                  }
+              }
+          }
+          EOF
+          cat /tmp/hook.txt android/build.gradle.kts > /tmp/merged.kts
+          cp /tmp/merged.kts android/build.gradle.kts
           flutter pub get
           flutter build apk --release
       - uses: actions/upload-artifact@v4
