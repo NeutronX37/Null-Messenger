@@ -9,17 +9,21 @@ jobs:
         with: { distribution: temurin, java-version: "17" }
       - uses: subosito/flutter-action@v2
         with: { channel: stable }
-      - name: Generate Android project and overlay my files
+      - name: Create project and place files
         run: |
-          SRC=$(dirname "$(find "$GITHUB_WORKSPACE" -name pubspec.yaml -not -path '*/.github/*' | head -1)")
-          echo "Source folder: $SRC"
+          S="$GITHUB_WORKSPACE"
           mkdir -p /tmp/app && cd /tmp/app
           flutter create --org com.example --project-name offline_mesh --platforms=android .
           rm -rf lib
-          cp -r "$SRC/lib" "$SRC/pubspec.yaml" .
-          cp "$SRC/android/app/src/main/AndroidManifest.xml" android/app/src/main/
-          cp "$SRC/android/app/src/main/kotlin/com/example/offline_mesh/MainActivity.kt" android/app/src/main/kotlin/com/example/offline_mesh/
-          sed -i 's/minSdk = flutter.minSdkVersion/minSdk = 29/; s/minSdkVersion flutter.minSdkVersion/minSdkVersion 29/' android/app/build.gradle* || true
+          mkdir -p lib/screens
+          cp "$S/pubspec.yaml" .
+          cp "$S/main.dart" "$S/session.dart" "$S/lan_node.dart" "$S/hotspot_service.dart" lib/
+          cp "$S/host_screen.dart" "$S/join_screen.dart" "$S/chat_screen.dart" lib/screens/
+          cp "$S/AndroidManifest.xml" android/app/src/main/
+          mkdir -p android/app/src/main/kotlin/com/example/offline_mesh
+          cp "$S/MainActivity.kt" android/app/src/main/kotlin/com/example/offline_mesh/
+          sed -i 's/minSdk = flutter.minSdkVersion/minSdk = 29/; s/minSdkVersion flutter.minSdkVersion/minSdkVersion 29/' android/app/build.gradle*
+          grep -n "minSdk" android/app/build.gradle*
           flutter pub get
           flutter build apk --release
       - uses: actions/upload-artifact@v4
