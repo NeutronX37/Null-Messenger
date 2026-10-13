@@ -16,7 +16,7 @@
     <uses-feature android:name="android.hardware.wifi" android:required="true"/>
 
     <application
-        android:label="Offline Mesh"
+        android:label="Void Messenger"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
         android:usesCleartextTraffic="true">
